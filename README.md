@@ -42,7 +42,53 @@ SIMON_Matheo_WEB2/
 
 ### I3 – Structuration de flux
 
-*À venir.*
+Pipeline en ligne de commande qui transforme `seances.ndjson` (formats variés, doublons, lignes invalides) en un flux propre : **lecture → validation → normalisation → déduplication → sortie**.
+
+Toutes les commandes se lancent **depuis le dossier `i3-flux`** :
+
+```bash
+cd i3-flux
+```
+
+**Lancer le pipeline** (bibliothèque standard uniquement, aucune installation nécessaire) :
+
+```bash
+python pipeline.py donnees/seances.ndjson --sortie sortie
+```
+
+Résultat affiché : `{"lus": 12, "acceptes": 6, "rejets": 4, "doublons": 2}`. Les fichiers sont écrits dans `sortie/` :
+
+| Fichier | Contenu |
+|---|---|
+| `acceptes.ndjson` | séances valides et normalisées, avec `source_line` |
+| `rejets.ndjson` | lignes rejetées, avec `source_line`, `motif` et la ligne brute |
+| `stats.json` | compteurs `lus`, `acceptes`, `rejets`, `doublons` |
+
+**Lancer les tests** (PowerShell sous Windows) :
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\python -m pip install -r requirements.txt
+.\.venv\Scripts\python -m pytest -v
+```
+
+Sous Linux / macOS, remplacer `.\.venv\Scripts\python` par `.venv/bin/python`.
+
+**Structure du module :**
+
+```
+i3-flux/
+├── pipeline.py          ← le pipeline (CLI)
+├── donnees/
+│   └── seances.ndjson   ← jeu de données du sujet (12 lignes, dont 1 malformée)
+├── tests/
+│   └── test_pipeline.py ← 32 tests pytest
+├── requirements.txt     ← dépendances de test (versions figées)
+├── pytest.ini           ← configuration de pytest
+└── .gitattributes       ← fins de ligne LF pour les .ndjson
+```
+
+**Preuves :** [`preuves/i3/`](preuves/i3/) contient la sortie réelle du pipeline sur le fichier du sujet et la trace complète des tests.
 
 ### I4 – Webhooks & API tierce
 
