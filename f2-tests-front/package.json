@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:initial": "vitest run --config vitest.initial.config.js"
   },
   "dependencies": {
     "react": "19.3.0",
