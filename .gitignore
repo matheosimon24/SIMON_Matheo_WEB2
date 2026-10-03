@@ -1,0 +1,29 @@
+# --- Dépendances installées (se réinstallent avec npm install / pip install) ---
+node_modules/
+.venv/
+venv/
+
+# --- Fichiers générés ---
+dist/
+build/
+coverage/
+__pycache__/
+*.pyc
+.pytest_cache/
+.vite/
+
+# --- Secrets : ne jamais versionner un vrai .env ---
+.env
+.env.*
+!.env.example
+
+# --- Fichiers système et éditeurs ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# --- Logs ---
+*.log
+npm-debug.log*
