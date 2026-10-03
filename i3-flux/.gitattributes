@@ -1,0 +1,3 @@
+# Fins de ligne LF pour les fichiers NDJSON, quel que soit le système (Windows, Linux, macOS) :
+# le même fichier donne ainsi le même résultat partout.
+*.ndjson text eol=lf
