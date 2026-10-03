@@ -41,6 +41,15 @@ class LigneInvalide(Exception):
 
 # --- Normalisation des champs ---------------------------------------------
 
+def est_parmi(valeur, autorisees):
+    """Vrai si valeur est un texte présent dans autorisees.
+
+    On vérifie d'abord le type : tester une liste ou un objet JSON avec `in`
+    sur un set ou un dict lèverait une TypeError et arrêterait le pipeline.
+    """
+    return isinstance(valeur, str) and valeur in autorisees
+
+
 def normaliser_date(valeur):
     """Retourne la date au format YYYY-MM-DD, ou lève LigneInvalide.
 
@@ -91,27 +100,27 @@ def normaliser_seance(objet):
     except LigneInvalide as e:
         erreurs.append(str(e))
 
-    if objet["period"] in PERIODES:
+    if est_parmi(objet["period"], PERIODES):
         seance["period"] = PERIODES[objet["period"]]
     else:
         erreurs.append(f"période invalide : {objet['period']!r}")
 
-    if objet["group"] in GROUPES:
+    if est_parmi(objet["group"], GROUPES):
         seance["group"] = objet["group"]
     else:
         erreurs.append(f"groupe invalide : {objet['group']!r}")
 
-    if objet["mode"] in MODES:
+    if est_parmi(objet["mode"], MODES):
         seance["mode"] = objet["mode"]
     else:
         erreurs.append(f"mode invalide : {objet['mode']!r}")
 
-    if objet["teacherId"] is None or objet["teacherId"] in FORMATEURS:
+    if objet["teacherId"] is None or est_parmi(objet["teacherId"], FORMATEURS):
         seance["teacherId"] = objet["teacherId"]
     else:
         erreurs.append(f"teacherId invalide : {objet['teacherId']!r}")
 
-    if objet["status"] in STATUTS:
+    if est_parmi(objet["status"], STATUTS):
         seance["status"] = STATUTS[objet["status"]]
     else:
         erreurs.append(f"statut invalide : {objet['status']!r}")
