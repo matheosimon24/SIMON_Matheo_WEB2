@@ -34,7 +34,45 @@ SIMON_Matheo_WEB2/
 
 ### F2 – Tests front
 
-*À venir.*
+Petit projet React testable : le composant `PlanningList` du sujet (conservé tel quel), sa version corrigée, un adaptateur d'API simulé et une suite de 8 tests lancée sur les deux versions.
+
+Toutes les commandes se lancent **depuis le dossier `f2-tests-front`** :
+
+```bash
+cd f2-tests-front
+npm ci
+```
+
+`npm ci` installe exactement les versions verrouillées dans `package-lock.json`.
+
+| Commande | Effet |
+|---|---|
+| `npm test` | Lance les 8 tests sur le **composant corrigé** (non interactif) → 8 verts |
+| `npm run test:initial` | Lance les mêmes tests sur le **composant initial** → 3 rouges attendus (preuve des défauts) |
+| `npm run dev` | Lance l'interface sur `http://localhost:5173` (choix de la version, simulation de panne) |
+
+**Structure du module :**
+
+```
+f2-tests-front/
+├── index.html
+├── package.json / package-lock.json   ← scripts et dépendances verrouillées
+├── vite.config.js                     ← configuration Vite + Vitest (jsdom)
+├── vitest.initial.config.js           ← configuration de npm run test:initial
+└── src/
+    ├── PlanningList.initial.jsx       ← composant du sujet, NON modifié
+    ├── PlanningList.jsx               ← composant corrigé
+    ├── api/planningApi.js             ← adaptateur d'API simulé (règle A/B + Promotion)
+    ├── donnees/seances.js             ← jeu de données du sujet
+    ├── App.jsx / main.jsx             ← interface minimale
+    ├── setupTests.js                  ← configuration commune des tests
+    └── tests/
+        ├── suitePlanningList.jsx      ← la suite de 8 tests, écrite une seule fois
+        ├── PlanningList.test.jsx      ← suite sur le composant corrigé (npm test)
+        └── initial.verif.jsx          ← suite sur le composant initial (npm run test:initial)
+```
+
+**Preuves :** [`preuves/f2/`](preuves/f2/) contient la trace des tests rouges avant correction et des tests verts après correction. Le tableau des scénarios et les limites sont dans [JUSTIFICATIONS.md](JUSTIFICATIONS.md#f2--tests-front).
 
 ### F3 – Bibliothèques UI
 

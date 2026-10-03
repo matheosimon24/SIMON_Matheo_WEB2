@@ -22,7 +22,18 @@ L'IA a été utilisée comme assistant. Le code et les choix techniques ont ét�
 
 ### F2 – Tests front
 
-*À compléter.*
+- **Fichiers concernés :** tout le dossier `f2-tests-front/` (sauf `PlanningList.initial.jsx`, recopié du sujet), `preuves/f2/`, section F2 du README et de JUSTIFICATIONS.md
+- **Requêtes représentatives :**
+  - Mise en place d'un projet React + Vite + Vitest minimal avec dépendances verrouillées
+  - Écriture d'une suite de tests couvrant les 6 scénarios du sujet, le nom accessible et le clavier, réutilisable sur les deux versions du composant
+  - Correction minimale du composant pour faire passer les tests
+- **Ce que l'IA a produit :** la configuration du projet, l'adaptateur simulé, la suite de tests, le composant corrigé, l'interface de comparaison et une première version de la documentation.
+- **Adaptations :** découpage en branches (initialisation, tests, correction, documentation) pour que l'historique montre les tests rouges **avant** la correction ; documentation en français ; choix dans l'interface entre la version initiale et la version corrigée pour la démonstration.
+- **Vérifications :**
+  - `npm run test:initial` lancé par moi-même : 3 tests rouges, dont j'ai lu et compris les messages (attendu / reçu) ;
+  - `npm test` après correction : 8 tests verts ;
+  - comparaison des deux versions dans le navigateur (panne simulée, changement rapide de filtre) ;
+  - comparaison ligne à ligne entre la version initiale et la version corrigée pour vérifier que la correction reste minimale.
 
 ### F3 – Bibliothèques UI
 
