@@ -1,0 +1,358 @@
+
+ RUN  v5.0.3 C:/Users/33769/Desktop/hetic/Rattrapage/f2-tests-front
+
+ ✓ src/tests/initial.verif.jsx > PlanningList (version initiale) > 1. chargement : affiche « Chargement… » pendant la requête et demande tous les groupes 114ms
+ ✓ src/tests/initial.verif.jsx > PlanningList (version initiale) > 2. succès : affiche les séances reçues et retire le chargement 24ms
+ ✓ src/tests/initial.verif.jsx > PlanningList (version initiale) > 3. groupe A : affiche les séances de A et celles de la Promotion, pas celles de B 95ms
+ × src/tests/initial.verif.jsx > PlanningList (version initiale) > 4. résultat vide : affiche un message explicite au lieu d'une liste vide 7ms
+   → Unable to find an element with the text: /aucune séance/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section>
+      <h1>
+        Planning
+      </h1>
+      <select
+        aria-label="Groupe"
+      >
+        <option
+          value="all"
+        >
+          Tous
+        </option>
+        <option
+          value="A"
+        >
+          Groupe A
+        </option>
+        <option
+          value="B"
+        >
+          Groupe B
+        </option>
+        <option
+          value="Promotion"
+        >
+          Promotion
+        </option>
+      </select>
+      <ul />
+    </section>
+  </div>
+</body>
+ × src/tests/initial.verif.jsx > PlanningList (version initiale) > 5. erreur puis nouvelle tentative : affiche l'erreur, puis recharge au clic sur « Réessayer » 20ms
+   → Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Planning":
+  <h1 />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Groupe":
+  <select
+    aria-label="Groupe"
+  />
+
+  --------------------------------------------------
+  option:
+
+  Name "Tous":
+  <option
+    value="all"
+  />
+
+  Name "Groupe A":
+  <option
+    value="A"
+  />
+
+  Name "Groupe B":
+  <option
+    value="B"
+  />
+
+  Name "Promotion":
+  <option
+    value="Promotion"
+  />
+
+  --------------------------------------------------
+  status:
+
+  Name "":
+  <p
+    role="status"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section>
+      <h1>
+        Planning
+      </h1>
+      <select
+        aria-label="Groupe"
+      >
+        <option
+          value="all"
+        >
+          Tous
+        </option>
+        <option
+          value="A"
+        >
+          Groupe A
+        </option>
+        <option
+          value="B"
+        >
+          Groupe B
+        </option>
+        <option
+          value="Promotion"
+        >
+          Promotion
+        </option>
+      </select>
+      <p
+        role="status"
+      >
+        Chargement…
+      </p>
+    </section>
+  </div>
+</body>
+ × src/tests/initial.verif.jsx > PlanningList (version initiale) > 6. réponses dans le désordre : seule la réponse du dernier filtre choisi est affichée 132ms
+   → expected [ 'React composants', …(3) ] to deeply equal [ 'React événements', …(3) ]
+ ✓ src/tests/initial.verif.jsx > PlanningList (version initiale) > 7. accessibilité : le filtre a le nom accessible « Groupe » et propose les 4 choix 9ms
+ ✓ src/tests/initial.verif.jsx > PlanningList (version initiale) > 8. clavier : le filtre est atteignable avec Tab et son changement relance le chargement 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/initial.verif.jsx > PlanningList (version initiale) > 4. résultat vide : affiche un message explicite au lieu d'une liste vide
+TestingLibraryElementError: Unable to find an element with the text: /aucune séance/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section>
+      <h1>
+        Planning
+      </h1>
+      <select
+        aria-label="Groupe"
+      >
+        <option
+          value="all"
+        >
+          Tous
+        </option>
+        <option
+          value="A"
+        >
+          Groupe A
+        </option>
+        <option
+          value="B"
+        >
+          Groupe B
+        </option>
+        <option
+          value="Promotion"
+        >
+          Promotion
+        </option>
+      </select>
+      <ul />
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/tests/suitePlanningList.jsx:78:21
+     76|       await act(async () => requetes[0].resolve([]));
+     77|
+     78|       expect(screen.getByText(/aucune séance/i)).toBeInTheDocument();
+       |                     ^
+     79|       expect(screen.queryByRole('status')).not.toBeInTheDocument();
+     80|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/tests/initial.verif.jsx > PlanningList (version initiale) > 5. erreur puis nouvelle tentative : affiche l'erreur, puis recharge au clic sur « Réessayer »
+TestingLibraryElementError: Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Planning":
+  <h1 />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Groupe":
+  <select
+    aria-label="Groupe"
+  />
+
+  --------------------------------------------------
+  option:
+
+  Name "Tous":
+  <option
+    value="all"
+  />
+
+  Name "Groupe A":
+  <option
+    value="A"
+  />
+
+  Name "Groupe B":
+  <option
+    value="B"
+  />
+
+  Name "Promotion":
+  <option
+    value="Promotion"
+  />
+
+  --------------------------------------------------
+  status:
+
+  Name "":
+  <p
+    role="status"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section>
+      <h1>
+        Planning
+      </h1>
+      <select
+        aria-label="Groupe"
+      >
+        <option
+          value="all"
+        >
+          Tous
+        </option>
+        <option
+          value="A"
+        >
+          Groupe A
+        </option>
+        <option
+          value="B"
+        >
+          Groupe B
+        </option>
+        <option
+          value="Promotion"
+        >
+          Promotion
+        </option>
+      </select>
+      <p
+        role="status"
+      >
+        Chargement…
+      </p>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/tests/suitePlanningList.jsx:90:21
+     88|
+     89|       // L'erreur doit être annoncée et le chargement doit s'arrêter.
+     90|       expect(screen.getByRole('alert')).toHaveTextContent(/impossible …
+       |                     ^
+     91|       expect(screen.queryByRole('status')).not.toBeInTheDocument();
+     92|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/tests/initial.verif.jsx > PlanningList (version initiale) > 6. réponses dans le désordre : seule la réponse du dernier filtre choisi est affichée
+AssertionError: expected [ 'React composants', …(3) ] to deeply equal [ 'React événements', …(3) ]
+
+- Expected
++ Received
+
+  [
+-   "React événements",
++   "React composants",
+    "Données et SQL",
+-   "Revue de projet",
++   "Authentification",
+    "Travail autonome",
+  ]
+
+ ❯ src/tests/suitePlanningList.jsx:120:32
+    118|
+    119|       expect(filtre).toHaveValue('B');
+    120|       expect(titresAffiches()).toEqual(titres(seancesB));
+       |                                ^
+    121|     });
+    122|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: Erreur réseau
+ ❯ src/tests/suitePlanningList.jsx:87:48
+     85|       render(<PlanningList loadSessions={loadSessions} />);
+     86|
+     87|       await act(async () => requetes[0].reject(new Error('Erreur résea…
+       |                                                ^
+     88|
+     89|       // L'erreur doit être annoncée et le chargement doit s'arrêter.
+ ❯ node_modules/@testing-library/react/dist/act-compat.js:47:24
+ ❯ process.env.NODE_ENV.exports.act node_modules/react/cjs/react.development.js:890:22
+ ❯ node_modules/@testing-library/react/dist/act-compat.js:46:25
+ ❯ src/tests/suitePlanningList.jsx:87:13
+ ❯ node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+ ❯ node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+ ❯ node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+ ❯ runWithCancel node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10
+
+This error originated in "src/tests/initial.verif.jsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "5. erreur puis nouvelle tentative : affiche l'erreur, puis recharge au clic sur « Réessayer »". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 5 passed (8)
+     Errors  1 error
+   Start at  12:58:05
+   Duration  1.66s (environment 52%, tests 29%, setup 10%, import 4%, transform 4%)
+
