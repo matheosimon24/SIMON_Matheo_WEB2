@@ -40,8 +40,9 @@ L'IA a été utilisée comme assistant. Le code et les choix techniques ont ét�
 - **Vérifications :**
   - résultat attendu déduit des règles du sujet, ligne par ligne (12 lus = 6 acceptés + 4 rejets + 2 doublons), puis comparé à la sortie réelle ;
   - exécution du pipeline par moi-même depuis le terminal ;
-  - lancement de la suite de tests (32 tests verts) ;
-  - relecture du code fonction par fonction.
+  - lancement de la suite de tests (47 tests verts) ;
+  - relecture du code fonction par fonction ;
+  - test de cas non prévus par le sujet : une valeur de type liste (`"period": []`) faisait planter le pipeline. Le défaut a été corrigé (contrôle du type avant la valeur) et couvert par un nouveau test.
 
 ### I4 – Webhooks & API tierce
 

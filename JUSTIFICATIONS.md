@@ -23,6 +23,7 @@ Ce document explique, pour chaque module, les choix techniques réalisés, les a
 - **Python, bibliothèque standard uniquement** (`json`, `re`, `datetime`, `argparse`) : aucune dépendance à installer pour lancer le pipeline. `pytest` ne sert qu'aux tests.
 - **Ordre des étapes imposé par le sujet :** lecture → validation → normalisation → déduplication → sortie. La validation se fait **avant** la déduplication : une ligne invalide ne « réserve » jamais un `id`, c'est la première occurrence **valide** qui est retenue (testé par `test_validation_avant_deduplication`).
 - **Une ligne en erreur n'interrompt pas les suivantes :** chaque erreur (JSON malformé, encodage, valeur invalide) est attrapée, transformée en rejet avec motif, et le traitement continue.
+- **Vérification du type avant la valeur :** la fonction `est_parmi()` vérifie qu'une valeur est un texte avant de la chercher dans la liste des valeurs autorisées. Sans ce contrôle, une liste ou un objet JSON à la place d'un texte (ex. `"period": []`) provoquait une `TypeError` qui arrêtait tout le pipeline ; c'est désormais un rejet comme un autre (testé par `test_valeur_non_textuelle_rejetee_sans_planter`).
 - **Motifs de rejet détaillés :** toutes les erreurs d'une même ligne sont rassemblées dans le motif (ex. `période invalide : 'soir'`). La ligne brute est ajoutée dans `rejets.ndjson` pour pouvoir corriger la source sans la rouvrir.
 - **Règles métier vérifiées après les champs :** « AUTO exige teacherId null + proposed » et « confirmed exige un formateur » ne sont testées que si les champs concernés sont eux-mêmes valides, pour éviter des motifs en cascade.
 - **Indépendance vis-à-vis du fuseau horaire :** les dates sont validées avec `datetime.date`, qui représente une date de calendrier sans heure ni fuseau. `2026-02-30` est rejetée car `date(2026, 2, 30)` lève une erreur. Aucune fonction dépendant de l'heure locale n'est utilisée.
@@ -45,7 +46,7 @@ Le fichier est lu **ligne par ligne** et `traiter_flux()` est un **générateur*
 
 - `preuves/i3/sortie/` : sortie réelle du pipeline sur le fichier du sujet (`acceptes.ndjson`, `rejets.ndjson`, `stats.json`).
 - `preuves/i3/execution.txt` : statistiques affichées par la commande (`12 = 6 + 4 + 2`).
-- `preuves/i3/tests.txt` : trace des 32 tests pytest, tous verts.
+- `preuves/i3/tests.txt` : trace des 47 tests pytest, tous verts.
 - Résultat détaillé : acceptés s01, s02, s03, s04, s05, s06 ; rejetés bad1 (titre vide), bad2 (date inexistante), bad3 (période « soir »), bad4 (JSON malformé) ; doublons lignes 4 (s01) et 10 (s02).
 
 ### Limites
