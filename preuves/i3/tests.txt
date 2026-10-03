@@ -1,0 +1,41 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\33769\Desktop\hetic\Rattrapage\i3-flux\.venv\Scripts\python.exe
+rootdir: C:\Users\33769\Desktop\hetic\Rattrapage\i3-flux
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 32 items
+
+tests/test_pipeline.py::test_ligne_valide_est_normalisee PASSED          [  3%]
+tests/test_pipeline.py::test_periodes_normalisees[matin-am] PASSED       [  6%]
+tests/test_pipeline.py::test_periodes_normalisees[am-am] PASSED          [  9%]
+tests/test_pipeline.py::test_periodes_normalisees[apr\xe8s-midi-pm] PASSED [ 12%]
+tests/test_pipeline.py::test_periodes_normalisees[apres-midi-pm] PASSED  [ 15%]
+tests/test_pipeline.py::test_periodes_normalisees[pm-pm] PASSED          [ 18%]
+tests/test_pipeline.py::test_mode_auto_valide PASSED                     [ 21%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs0-date inexistante] PASSED [ 25%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs1-format de date invalide] PASSED [ 28%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs2-p\xe9riode invalide] PASSED [ 31%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs3-groupe invalide] PASSED [ 34%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs4-mode invalide] PASSED [ 37%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs5-teacherId invalide] PASSED [ 40%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs6-statut invalide] PASSED [ 43%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs7-title vide] PASSED [ 46%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs8-AUTO exige] PASSED [ 50%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs9-AUTO exige] PASSED [ 53%]
+tests/test_pipeline.py::test_ligne_invalide_rejetee_avec_motif[modifs10-confirmed exige un formateur] PASSED [ 56%]
+tests/test_pipeline.py::test_champ_manquant_rejete PASSED                [ 59%]
+tests/test_pipeline.py::test_json_qui_n_est_pas_un_objet_rejete PASSED   [ 62%]
+tests/test_pipeline.py::test_ligne_invalide_n_interrompt_pas_les_suivantes PASSED [ 65%]
+tests/test_pipeline.py::test_doublon_garde_la_premiere_occurrence PASSED [ 68%]
+tests/test_pipeline.py::test_validation_avant_deduplication PASSED       [ 71%]
+tests/test_pipeline.py::test_json_malforme_rejete_puis_traitement_continue PASSED [ 75%]
+tests/test_pipeline.py::test_encodage_invalide_rejete PASSED             [ 78%]
+tests/test_pipeline.py::test_ligne_vide_rejetee PASSED                   [ 81%]
+tests/test_pipeline.py::test_fichier_vide PASSED                         [ 84%]
+tests/test_pipeline.py::test_fichier_du_sujet PASSED                     [ 87%]
+tests/test_pipeline.py::test_meme_fichier_meme_resultat PASSED           [ 90%]
+tests/test_pipeline.py::test_fins_de_ligne_windows_et_bom PASSED         [ 93%]
+tests/test_pipeline.py::test_cli_fichier_introuvable PASSED              [ 96%]
+tests/test_pipeline.py::test_cli_affiche_les_stats PASSED                [100%]
+
+============================= 32 passed in 0.10s ==============================
