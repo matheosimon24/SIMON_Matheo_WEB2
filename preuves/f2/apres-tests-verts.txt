@@ -1,0 +1,17 @@
+
+ RUN  v5.0.3 C:/Users/33769/Desktop/hetic/Rattrapage/f2-tests-front
+
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 1. chargement : affiche « Chargement… » pendant la requête et demande tous les groupes 114ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 2. succès : affiche les séances reçues et retire le chargement 28ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 3. groupe A : affiche les séances de A et celles de la Promotion, pas celles de B 91ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 4. résultat vide : affiche un message explicite au lieu d'une liste vide 4ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 5. erreur puis nouvelle tentative : affiche l'erreur, puis recharge au clic sur « Réessayer » 60ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 6. réponses dans le désordre : seule la réponse du dernier filtre choisi est affichée 154ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 7. accessibilité : le filtre a le nom accessible « Groupe » et propose les 4 choix 8ms
+ ✓ src/tests/PlanningList.test.jsx > PlanningList (version corrigée) > 8. clavier : le filtre est atteignable avec Tab et son changement relance le chargement 67ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  13:02:19
+   Duration  1.74s (environment 49%, tests 33%, setup 10%, import 4%, transform 4%)
+
