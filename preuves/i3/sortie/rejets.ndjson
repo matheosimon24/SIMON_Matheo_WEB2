@@ -1,0 +1,4 @@
+{"source_line": 7, "motif": "title vide ou invalide", "ligne": "{\"id\":\"bad1\",\"date\":\"2026-10-20\",\"period\":\"pm\",\"group\":\"Promotion\",\"mode\":\"AUTO\",\"title\":\"\",\"domain\":\"projet\",\"teacherId\":null,\"status\":\"proposed\"}"}
+{"source_line": 8, "motif": "date inexistante : '2026-02-30'", "ligne": "{\"id\":\"bad2\",\"date\":\"2026-02-30\",\"period\":\"am\",\"group\":\"A\",\"mode\":\"DG\",\"title\":\"Date invalide\",\"domain\":\"web\",\"teacherId\":\"t1\",\"status\":\"proposed\"}"}
+{"source_line": 9, "motif": "période invalide : 'soir'", "ligne": "{\"id\":\"bad3\",\"date\":\"2026-10-20\",\"period\":\"soir\",\"group\":\"A\",\"mode\":\"DG\",\"title\":\"Période invalide\",\"domain\":\"web\",\"teacherId\":\"t1\",\"status\":\"proposed\"}"}
+{"source_line": 12, "motif": "JSON malformé : Expecting ',' delimiter", "ligne": "{\"id\":\"bad4\",\"title\":\"JSON tronqué\""}
