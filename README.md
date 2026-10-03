@@ -82,7 +82,7 @@ i3-flux/
 ├── donnees/
 │   └── seances.ndjson   ← jeu de données du sujet (12 lignes, dont 1 malformée)
 ├── tests/
-│   └── test_pipeline.py ← 32 tests pytest
+│   └── test_pipeline.py ← 47 tests pytest
 ├── requirements.txt     ← dépendances de test (versions figées)
 ├── pytest.ini           ← configuration de pytest
 └── .gitattributes       ← fins de ligne LF pour les .ndjson

@@ -91,6 +91,16 @@ def test_json_qui_n_est_pas_un_objet_rejete():
     assert "pas un objet" in resultats[0][1]["motif"]
 
 
+@pytest.mark.parametrize("champ", ["period", "group", "mode", "teacherId", "status"])
+@pytest.mark.parametrize("valeur", [[], {}, 42])
+def test_valeur_non_textuelle_rejetee_sans_planter(champ, valeur):
+    # Une liste ou un objet JSON à la place d'un texte doit donner un rejet, pas une erreur Python.
+    flux = lignes(seance(id="a", **{champ: valeur}), seance(id="b"))
+    resultats = list(traiter_flux(flux))
+    assert [t for t, _ in resultats] == ["rejet", "accepte"]
+    assert "invalide" in resultats[0][1]["motif"]
+
+
 def test_ligne_invalide_n_interrompt_pas_les_suivantes():
     flux = lignes(seance(id="a", period="soir"), seance(id="b"))
     types = [t for t, _ in traiter_flux(flux)]
