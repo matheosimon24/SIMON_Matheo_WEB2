@@ -1,0 +1,8 @@
+# Le pipeline n'utilise que la bibliothèque standard de Python.
+# Ces dépendances (versions figées) servent uniquement à lancer les tests.
+pytest==9.1.1
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+Pygments==2.21.0
+colorama==0.4.6 ; sys_platform == "win32"
