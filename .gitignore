@@ -11,6 +11,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .vite/
+i3-flux/sortie/
 
 # --- Secrets : ne jamais versionner un vrai .env ---
 .env
