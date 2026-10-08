@@ -37,7 +37,19 @@ L'IA a été utilisée comme assistant. Le code et les choix techniques ont ét�
 
 ### F3 – Bibliothèques UI
 
-*À compléter.*
+- **Fichiers concernés :** tout le dossier `f3-ui/`, `preuves/f3/contraste.md`, `preuves/f3/protocole-clavier.md`, section F3 du README et de JUSTIFICATIONS.md
+- **Requêtes représentatives :**
+  - Mise en place d'un projet React + Vite + Tailwind CSS v4
+  - Réalisation de la vue planning (filtres, cartes, badges, détail modal, état vide) en respectant l'accessibilité demandée
+  - Mesure des contrastes des couleurs utilisées et rédaction d'un protocole clavier
+- **Ce que l'IA a produit :** le code de l'interface, le calcul des contrastes dans le navigateur, le protocole clavier et une première version de la documentation.
+- **Adaptations :** choix de Tailwind plutôt que MUI pour garder des éléments natifs ; ajout d'un filtre « Domaine » pour rendre l'état vide atteignable ; documentation en français.
+- **Vérifications :**
+  - test dans le navigateur à 1280 px et 360 px (pas de défilement horizontal à 360 px) ;
+  - parcours clavier : ouverture du détail, focus sur « Fermer », fermeture par Échap et retour du focus vérifiés par l'élément actif du navigateur ;
+  - protocole clavier refait par moi-même et coché dans `preuves/f3/protocole-clavier.md` ;
+  - captures d'écran réalisées par moi-même dans les outils développeur ;
+  - ratios de contraste calculés à partir des couleurs réellement rendues par le navigateur.
 
 ### I3 – Structuration de flux
 
