@@ -3,14 +3,16 @@
 Lancement : uvicorn recepteur.main:app --port 8000
 """
 
+import asyncio
 import json
 import logging
 import os
 import time
 
-from fastapi import FastAPI, Request
+from fastapi import BackgroundTasks, FastAPI, Request
 from fastapi.responses import JSONResponse
 
+from recepteur.livraison import livrer
 from recepteur.signature import WebhookNonAuthentifie, verifier_webhook
 from recepteur.stockage import StockageLivraisons
 from recepteur.validation import EvenementInvalide, valider_evenement
@@ -20,13 +22,19 @@ TAILLE_MAX_OCTETS = 64 * 1024  # 64 Ko
 # Secret de développement local, imposé par le sujet. En production il viendrait d'un
 # gestionnaire de secrets ; ici il peut être remplacé par la variable d'environnement.
 SECRET_PAR_DEFAUT = "matrice-local-only"
+URL_PARTENAIRE_PAR_DEFAUT = "http://127.0.0.1:8001/tickets"
 
 journal = logging.getLogger("matrice.webhooks")
 
 
-def creer_app(secret=None, horloge=time.time):
-    """Fabrique l'application. horloge est injectable pour tester l'ancienneté sans attendre."""
+def creer_app(secret=None, horloge=time.time, url_partenaire=None, attendre=asyncio.sleep, transport=None):
+    """Fabrique l'application.
+
+    horloge, attendre et transport sont injectables : les tests contrôlent l'heure, les pauses
+    entre relances et, si besoin, les réponses du partenaire.
+    """
     secret = secret or os.environ.get("MATRICE_WEBHOOK_SECRET", SECRET_PAR_DEFAUT)
+    url_partenaire = url_partenaire or os.environ.get("PARTENAIRE_URL", URL_PARTENAIRE_PAR_DEFAUT)
     app = FastAPI(title="MATRiCE – récepteur de webhooks")
     stockage = StockageLivraisons()
     app.state.stockage = stockage
@@ -39,7 +47,7 @@ def creer_app(secret=None, horloge=time.time):
         return {"status": "ok"}
 
     @app.post("/webhooks/planning")
-    async def recevoir(request: Request):
+    async def recevoir(request: Request, taches: BackgroundTasks):
         # 1. Taille : vérifiée AVANT tout calcul, pour ne pas traiter un corps énorme.
         longueur = request.headers.get("content-length")
         if longueur and longueur.isdigit() and int(longueur) > TAILLE_MAX_OCTETS:
@@ -80,7 +88,9 @@ def creer_app(secret=None, horloge=time.time):
             journal.info("événement %s déjà reçu : doublon ignoré, aucune nouvelle livraison", event_id)
             return JSONResponse(status_code=200, content={"event_id": event_id, "duplicate": True})
 
-        journal.info("événement %s accepté", event_id)
+        journal.info("événement %s accepté, livraison programmée", event_id)
+        # La livraison s'exécute APRÈS l'envoi de la réponse 202 : l'émetteur n'attend pas le partenaire.
+        taches.add_task(livrer, evenement, url_partenaire, stockage, attendre, transport)
         return JSONResponse(status_code=202, content={"event_id": event_id, "duplicate": False})
 
     @app.get("/deliveries/{event_id}")
