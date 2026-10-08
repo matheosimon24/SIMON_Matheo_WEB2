@@ -3,6 +3,7 @@
 import json
 import logging
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
@@ -10,9 +11,17 @@ from recepteur.main import creer_app
 from tests.outils import MAINTENANT, SECRET, entetes_signes, envoyer, evenement
 
 
+async def sans_attente(_secondes):
+    pass
+
+
 @pytest.fixture
 def client():
-    app = creer_app(secret=SECRET, horloge=lambda: MAINTENANT)
+    # Ces tests portent sur la réception : le partenaire est simulé sans réseau (il répond 201
+    # immédiatement). La livraison est testée dans test_livraison.py.
+    partenaire_simule = httpx.MockTransport(lambda requete: httpx.Response(201))
+    app = creer_app(secret=SECRET, horloge=lambda: MAINTENANT, url_partenaire="http://partenaire/tickets",
+                    attendre=sans_attente, transport=partenaire_simule)
     with TestClient(app) as c:
         yield c
 
