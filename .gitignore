@@ -28,3 +28,6 @@ desktop.ini
 # --- Logs ---
 *.log
 npm-debug.log*
+
+# --- Configuration locale des outils (Claude Code) ---
+.claude/
