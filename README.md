@@ -20,17 +20,23 @@ SIMON_Matheo_WEB2/
 └── preuves/             ← captures, traces de tests avant/après, résultats
 ```
 
-> Les dossiers des modules sont ajoutés au fur et à mesure de l'avancement.
-
 ## Prérequis
 
 - Git
-- Node.js (version LTS) et npm — modules F2 et F3
-- Python 3.12 ou plus récent — modules I3 et I4
+- Node.js 22 ou plus récent, avec npm — modules F2 et F3 (testé avec Node.js 24.20 et npm 11.19)
+- Python 3.12 ou plus récent — modules I3 et I4 (testé avec Python 3.14)
 
 ## Installation, lancement et tests
 
-*À compléter pour chaque module au fur et à mesure.*
+Chaque module s'installe et se lance **depuis son propre dossier**. Résumé des commandes de test (détails dans chaque section ci-dessous) :
+
+| Module | Dossier | Installation | Tests / lancement | Résultat attendu |
+|---|---|---|---|---|
+| F2 | `f2-tests-front` | `npm ci` | `npm test` | 8 tests verts |
+| F2 (preuve avant) | `f2-tests-front` | | `npm run test:initial` | 3 tests rouges **attendus** |
+| F3 | `f3-ui` | `npm ci` | `npm run dev` | page sur `http://localhost:5173` |
+| I3 | `i3-flux` | `python -m venv .venv` puis `pip install -r requirements.txt` | `pytest -v` | 47 tests verts |
+| I4 | `i4-webhooks` | `python -m venv .venv` puis `pip install -r requirements.txt` | `pytest -v` | 44 tests verts |
 
 ### F2 – Tests front
 
