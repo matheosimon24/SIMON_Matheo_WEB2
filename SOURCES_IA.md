@@ -84,4 +84,15 @@ L'IA a été utilisée comme assistant. Le code et les choix techniques ont ét�
 
 ## Autres sources
 
-*À compléter (documentation officielle consultée, etc.).*
+Documentation officielle utilisée pour vérifier les choix techniques :
+
+- React : « You Might Not Need an Effect » et `useEffect` (gestion des réponses obsolètes avec un drapeau `ignore`) — https://react.dev
+- Vitest et Testing Library (requêtes par rôle, `user-event`) — https://vitest.dev, https://testing-library.com
+- Tailwind CSS v4 (installation avec Vite) — https://tailwindcss.com/docs
+- MDN : élément `<dialog>` et `showModal()`, `aria-live` — https://developer.mozilla.org
+- WCAG 2.1 : contraste minimum (1.4.3) et contraste non textuel (1.4.11) — https://www.w3.org/TR/WCAG21/
+- Python : `hmac.compare_digest`, `datetime` — https://docs.python.org/3/
+- FastAPI (`Request.body()`, `BackgroundTasks`, `TestClient`) — https://fastapi.tiangolo.com
+- httpx (timeouts, `MockTransport`) — https://www.python-httpx.org
+
+Aucun code n'a été copié depuis un autre dépôt ou un site tiers.

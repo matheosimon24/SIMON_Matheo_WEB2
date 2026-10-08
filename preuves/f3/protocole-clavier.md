@@ -4,16 +4,16 @@ Page lancée avec `npm run dev` (dossier `f3-ui`), souris non utilisée. Tester 
 
 | # | Action | Résultat attendu | Observé (cocher ✅ ou noter l’écart) |
 |---|---|---|---|
-| 1 | `Tab` depuis le haut de la page | Le focus arrive sur le filtre « Groupe », avec un contour bleu épais visible | ☐ |
-| 2 | `Tab` | Le focus passe au filtre « Domaine » | ☐ |
-| 3 | Sur « Groupe » : `Alt + Flèche bas`, choisir « Promotion » avec les flèches, `Entrée` | La liste se met à jour (2 séances) ; le compteur indique « 2 séances affichées » | ☐ |
-| 4 | Sur « Domaine » : choisir « Cyber » | État vide « Aucune séance ne correspond à ces filtres » | ☐ |
-| 5 | `Tab` jusqu'à « Réinitialiser les filtres », `Entrée` | Les 6 séances réapparaissent, les filtres reviennent à « Tous » | ☐ |
-| 6 | `Tab` jusqu'au premier « Voir le détail », `Entrée` | La fenêtre de détail s'ouvre ; le focus est sur « Fermer » | ☐ |
-| 7 | `Tab` plusieurs fois dans la fenêtre | Le focus n'atteint jamais un élément de la page derrière la fenêtre (page rendue inerte) ; il peut passer à la barre d'adresse du navigateur puis revenir sur « Fermer » | ☐ |
-| 8 | `Échap` | La fenêtre se ferme ; le focus revient sur le bouton « Voir le détail » de la même carte | ☐ |
-| 9 | `Entrée` à nouveau, puis `Entrée` sur « Fermer » | La fenêtre se ferme ; le focus revient sur le même bouton | ☐ |
-| 10 | `Tab` / `Maj + Tab` sur toute la page | Ordre logique : filtres, puis cartes de gauche à droite et de haut en bas ; aucun élément sauté | ☐ |
+| 1 | `Tab` depuis le haut de la page | Le focus arrive sur le filtre « Groupe », avec un contour bleu épais visible | ✅ |
+| 2 | `Tab` | Le focus passe au filtre « Domaine » | ✅ |
+| 3 | Sur « Groupe » : `Alt + Flèche bas`, choisir « Promotion » avec les flèches, `Entrée` | La liste se met à jour (2 séances) ; le compteur indique « 2 séances affichées » | ✅ |
+| 4 | Sur « Domaine » : choisir « Cyber » | État vide « Aucune séance ne correspond à ces filtres » | ✅ |
+| 5 | `Tab` jusqu'à « Réinitialiser les filtres », `Entrée` | Les 6 séances réapparaissent, les filtres reviennent à « Tous » | ✅ |
+| 6 | `Tab` jusqu'au premier « Voir le détail », `Entrée` | La fenêtre de détail s'ouvre ; le focus est sur « Fermer » | ✅ |
+| 7 | `Tab` plusieurs fois dans la fenêtre | Le focus n'atteint jamais un élément de la page derrière la fenêtre (page rendue inerte) ; il peut passer à la barre d'adresse du navigateur puis revenir sur « Fermer » | ✅ |
+| 8 | `Échap` | La fenêtre se ferme ; le focus revient sur le bouton « Voir le détail » de la même carte | ✅ |
+| 9 | `Entrée` à nouveau, puis `Entrée` sur « Fermer » | La fenêtre se ferme ; le focus revient sur le même bouton | ✅ |
+| 10 | `Tab` / `Maj + Tab` sur toute la page | Ordre logique : filtres, puis cartes de gauche à droite et de haut en bas ; aucun élément sauté | ✅ |
 
 Vérifications automatisées complémentaires (dans le navigateur, via `document.activeElement`) :
 - après l'étape 6 : élément actif = bouton « Fermer », `dialog` ouvert en mode modal (`:modal`) ;
