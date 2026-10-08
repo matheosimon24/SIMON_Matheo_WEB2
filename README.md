@@ -76,7 +76,41 @@ f2-tests-front/
 
 ### F3 – Bibliothèques UI
 
-*À venir.*
+Vue planning simplifiée avec **Tailwind CSS** : en-tête, barre de filtres (groupe, domaine), cartes de séances regroupées par date, badges de domaine et de statut, détail en fenêtre modale et état vide. Utilisable au clavier et lisible de 360 px à 1280 px.
+
+Toutes les commandes se lancent **depuis le dossier `f3-ui`** :
+
+```bash
+cd f3-ui
+npm ci
+npm run dev
+```
+
+Ouvrir l'adresse affichée (par défaut `http://localhost:5173`). `npm run build` produit la version de production dans `dist/`.
+
+**Vérifier le rendu à 360 px et 1280 px :** outils développeur (`F12`) → mode appareil (`Ctrl + Maj + M`) → « Dimensions : Responsive » → saisir la largeur.
+
+**Structure du module :**
+
+```
+f3-ui/
+├── index.html
+├── package.json / package-lock.json   ← scripts et dépendances verrouillées
+├── vite.config.js                     ← Vite + plugin Tailwind CSS
+└── src/
+    ├── App.jsx                        ← page : filtres, séances par date, détail
+    ├── index.css                      ← import de Tailwind
+    ├── libelles.js                    ← libellés lisibles et format de date
+    ├── donnees/seances.js             ← données du sujet, formateurs, règle de filtre
+    └── composants/
+        ├── BarreFiltres.jsx           ← filtres groupe / domaine + compteur annoncé
+        ├── CarteSeance.jsx            ← carte d'une séance
+        ├── Badges.jsx                 ← badges domaine, statut, période
+        ├── DetailSeance.jsx           ← détail en <dialog> modal
+        └── EtatVide.jsx               ← message et réinitialisation des filtres
+```
+
+**Preuves :** [`preuves/f3/`](preuves/f3/) contient les captures à 360 et 1280 px, le protocole clavier et la mesure de contraste.
 
 ### I3 – Structuration de flux
 

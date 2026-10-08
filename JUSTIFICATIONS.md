@@ -70,10 +70,60 @@ Le test 8 ne peut pas simuler l'ouverture native d'un `<select>` (voir limites).
 
 ## F3 – Bibliothèques UI
 
-- **Choix techniques :** *à compléter*
-- **Alternatives envisagées :** *à compléter*
-- **Preuves :** *à compléter*
-- **Limites :** *à compléter*
+### Choix de la bibliothèque : Tailwind CSS
+
+- **Classes utilitaires + éléments HTML natifs :** Tailwind ne fournit que du style. On garde des `<select>`, `<button>`, `<dialog>`, `<dl>` natifs, dont le comportement clavier et le rôle pour les lecteurs d'écran sont garantis par le navigateur, sans réimplémentation.
+- **CSS léger :** le plugin Vite ne génère que les classes utilisées (environ 5 Ko de CSS).
+- **Responsive simple :** préfixes `sm:` (≥ 640 px) et `lg:` (≥ 1024 px), en partant du mobile.
+- **Classes `sr-only` et `focus-visible:`** fournies par Tailwind : texte réservé aux lecteurs d'écran et contour de focus visible seulement à la navigation clavier.
+
+### Hiérarchie carte / détail
+
+- **Niveaux de titre cohérents :** `h1` « Planning pédagogique » → `h2` par date (« Lundi 19 octobre 2026 ») → `h3` titre de la séance. Un lecteur d'écran peut naviguer de date en date ou de séance en séance.
+- **La carte montre l'essentiel pour choisir** : demi-journée et statut en haut (ce qu'on cherche d'abord dans un planning), le titre en gros, puis domaine, groupe et formateur sous forme de liste de définitions (`<dl>`), comme demandé par le sujet.
+- **Le détail montre tout le reste** : date complète, mode, formateur, identifiant, et une phrase qui explique le statut. On ne surcharge pas les cartes.
+- **Regroupement par date** : le planning se lit comme un calendrier ; à 1280 px trois cartes par ligne, à 360 px une colonne.
+
+### Lisibilité des statuts (sans dépendre de la couleur)
+
+Chaque statut combine **trois indices indépendants** :
+
+| Statut | Texte | Icône | Bordure | Couleur |
+|---|---|---|---|---|
+| Confirmée | « Confirmée » | ✓ | pleine | vert |
+| Proposée | « Proposée » | ◷ (horloge) | pointillée | ambre |
+
+Une personne daltonienne, une impression en noir et blanc ou un lecteur d'écran (« Statut : Confirmée ») distinguent donc les statuts. L'icône est décorative (`aria-hidden`) puisque le texte suffit. Le détail ajoute une phrase d'explication (« attend une confirmation »).
+
+### Accès aux actions et focus
+
+- **Bouton explicite par carte** « Voir le détail », avec un nom accessible unique (« Voir le détail de « React composants » ») pour ne pas entendre six fois le même libellé.
+- **`<dialog>` natif ouvert avec `showModal()`** : le navigateur rend le reste de la page inerte (ni clic, ni Tab, ni lecteur d'écran), gère `Échap` et le fond assombri.
+- **Focus à l'ouverture** sur « Fermer » (première action possible) ; **focus rendu à la fermeture** au bouton qui a ouvert le détail (référence gardée dans `App.jsx`). Le clavier ne perd jamais sa position dans la liste.
+- **Un seul point de sortie** : l'événement `close` du dialog est déclenché par Échap, par le bouton « Fermer » et par un clic sur le fond.
+- **Filtres** : `<label>` visibles reliés aux `<select>`, zone `role="search"`, compteur de résultats annoncé (`aria-live="polite"`).
+- **État vide actionnable** : il explique pourquoi rien ne s'affiche et propose « Réinitialiser les filtres ». Un filtre « Domaine » a été ajouté au filtre « Groupe » demandé pour que cet état soit atteignable avec les données du sujet (ex. Promotion + Cyber).
+
+### Alternatives envisagées
+
+- **MUI** : composants accessibles prêts à l'emploi (Dialog, Select, Chip), mais un style imposé (Material Design) difficile à adapter, beaucoup plus de JavaScript chargé, et un `Select` réimplémenté au lieu du `<select>` natif.
+- **Bibliothèque de composants sans style (Radix, Headless UI)** : utile pour des composants complexes, inutile ici puisque `<dialog>` couvre déjà le besoin de fenêtre modale.
+- **Panneau latéral ou zone sous la liste** pour le détail : possible, mais la modale garde le contexte sur petit écran et le navigateur gère le piège du focus.
+- **Défilement horizontal sur mobile** : rejeté au profit d'une colonne unique, plus naturelle au doigt.
+
+### Preuves
+
+- `preuves/f3/capture-1280.png` et `preuves/f3/capture-360.png` : page rendue dans le navigateur ; `capture-detail-360.png` : détail ouvert sur petit écran.
+- `preuves/f3/protocole-clavier.md` : protocole pas à pas et noms accessibles.
+- `preuves/f3/contraste.md` : ratios mesurés sur les couleurs calculées par le navigateur. Tous les textes ≥ 4,5:1 (AA), presque tous ≥ 7:1 (AAA) ; bordures de statut et focus ≥ 3:1.
+
+### Limites
+
+- **Pas de tests automatisés** pour cette vue (F2 couvre les tests front) : la vérification repose sur le protocole manuel.
+- **Pas d'audit avec un vrai lecteur d'écran** (NVDA, VoiceOver) : les noms accessibles sont vérifiés dans l'arbre d'accessibilité du navigateur.
+- **Données statiques** : pas de chargement asynchrone, donc pas d'état de chargement ni d'erreur dans cette vue.
+- **Le code « mode » (DG, CE, AUTO) est affiché tel quel**, faute de signification fournie par le sujet.
+- **Pas de mode sombre.**
 
 ## I3 – Structuration de flux
 
