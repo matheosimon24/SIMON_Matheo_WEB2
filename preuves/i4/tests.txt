@@ -1,0 +1,60 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\33769\Desktop\hetic\Rattrapage\i4-webhooks\.venv\Scripts\python.exe
+rootdir: C:\Users\33769\Desktop\hetic\Rattrapage\i4-webhooks
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collecting ... collected 44 items
+
+tests/test_livraison.py::test_partenaire_ok_livre_en_une_tentative PASSED [  2%]
+tests/test_livraison.py::test_503_puis_succes PASSED                     [  4%]
+tests/test_livraison.py::test_erreur_persistante_quarantaine_apres_3_tentatives PASSED [  6%]
+tests/test_livraison.py::test_400_sans_relance PASSED                    [  9%]
+tests/test_livraison.py::test_partenaire_lent_timeout_puis_quarantaine PASSED [ 11%]
+tests/test_livraison.py::test_doublon_ne_relance_pas_de_livraison PASSED [ 13%]
+tests/test_livraison.py::test_partenaire_injoignable_relance_puis_quarantaine PASSED [ 15%]
+tests/test_livraison.py::test_idempotence_cote_partenaire PASSED         [ 18%]
+tests/test_livraison.py::test_429_est_relance PASSED                     [ 20%]
+tests/test_livraison.py::test_autres_4xx_sans_relance[400] PASSED        [ 22%]
+tests/test_livraison.py::test_autres_4xx_sans_relance[401] PASSED        [ 25%]
+tests/test_livraison.py::test_autres_4xx_sans_relance[404] PASSED        [ 27%]
+tests/test_livraison.py::test_autres_4xx_sans_relance[409] PASSED        [ 29%]
+tests/test_livraison.py::test_autres_4xx_sans_relance[422] PASSED        [ 31%]
+tests/test_livraison.py::test_5xx_puis_succes_a_la_troisieme PASSED      [ 34%]
+tests/test_recepteur.py::test_sante PASSED                               [ 36%]
+tests/test_recepteur.py::test_signature_valide_acceptee PASSED           [ 38%]
+tests/test_recepteur.py::test_signature_invalide_refusee PASSED          [ 40%]
+tests/test_recepteur.py::test_corps_modifie_apres_signature_refuse PASSED [ 43%]
+tests/test_recepteur.py::test_signature_calculee_sur_le_corps_brut PASSED [ 45%]
+tests/test_recepteur.py::test_entetes_absents_ou_mal_formes_refuses[entetes0] PASSED [ 47%]
+tests/test_recepteur.py::test_entetes_absents_ou_mal_formes_refuses[entetes1] PASSED [ 50%]
+tests/test_recepteur.py::test_entetes_absents_ou_mal_formes_refuses[entetes2] PASSED [ 52%]
+tests/test_recepteur.py::test_entetes_absents_ou_mal_formes_refuses[entetes3] PASSED [ 54%]
+tests/test_recepteur.py::test_anciennete_du_timestamp[-301-401] PASSED   [ 56%]
+tests/test_recepteur.py::test_anciennete_du_timestamp[301-401] PASSED    [ 59%]
+tests/test_recepteur.py::test_anciennete_du_timestamp[-300-202] PASSED   [ 61%]
+tests/test_recepteur.py::test_anciennete_du_timestamp[300-202] PASSED    [ 63%]
+tests/test_recepteur.py::test_corps_trop_volumineux_refuse PASSED        [ 65%]
+tests/test_recepteur.py::test_corps_a_la_limite_accepte PASSED           [ 68%]
+tests/test_recepteur.py::test_json_invalide_authentifie PASSED           [ 70%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-event_id] PASSED [ 72%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-type] PASSED [ 75%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-fuseau] PASSED [ 77%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-ISO 8601] PASSED [ 79%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-AUTO] PASSED [ 81%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-confirmed exige un formateur] PASSED [ 84%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-date] PASSED [ 86%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-period] PASSED [ 88%]
+tests/test_recepteur.py::test_evenement_invalide_refuse[<lambda>-session] PASSED [ 90%]
+tests/test_recepteur.py::test_mode_auto_valide PASSED                    [ 93%]
+tests/test_recepteur.py::test_doublon_renvoie_200_sans_nouvel_enregistrement PASSED [ 95%]
+tests/test_recepteur.py::test_suivi_livraison_inconnue PASSED            [ 97%]
+tests/test_recepteur.py::test_logs_ne_contiennent_jamais_le_secret_ni_la_signature PASSED [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\33769\Desktop\hetic\Rattrapage\i4-webhooks\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 44 passed, 1 warning in 13.09s ========================
