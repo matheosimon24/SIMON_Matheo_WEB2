@@ -164,4 +164,67 @@ i3-flux/
 
 ### I4 – Webhooks & API tierce
 
-*À venir.*
+Récepteur de webhooks **FastAPI** (signature HMAC, horodatage, taille, validation, déduplication) qui transmet chaque nouvel événement à un **partenaire simulé**, avec timeout, relances et quarantaine.
+
+Toutes les commandes se lancent **depuis le dossier `i4-webhooks`** :
+
+```bash
+cd i4-webhooks
+python -m venv .venv
+.\.venv\Scripts\python -m pip install -r requirements.txt
+```
+
+Sous Linux / macOS, remplacer `.\.venv\Scripts\python` par `.venv/bin/python`.
+
+**Lancer les tests** (44 tests, environ 15 s : deux tests attendent réellement les timeouts de 2 s) :
+
+```bash
+.\.venv\Scripts\python -m pytest -v
+```
+
+**Lancer la démonstration** (3 terminaux) :
+
+```bash
+# Terminal 1 – partenaire simulé (mode : ok, flaky, down, slow ou reject)
+$env:PARTENAIRE_MODE="flaky"; .\.venv\Scripts\python -m uvicorn partenaire.app:app --port 8001
+
+# Terminal 2 – récepteur
+.\.venv\Scripts\python -m uvicorn recepteur.main:app --port 8000
+
+# Terminal 3 – envoi d'un webhook signé, puis suivi de la livraison
+.\.venv\Scripts\python scripts\envoyer_webhook.py --event-id evt-demo-1
+.\.venv\Scripts\python scripts\envoyer_webhook.py --event-id evt-demo-1                    # doublon -> 200
+.\.venv\Scripts\python scripts\envoyer_webhook.py --event-id evt-x --secret mauvais        # -> 401
+.\.venv\Scripts\python scripts\envoyer_webhook.py --event-id evt-y --decalage -400         # -> 401
+```
+
+Sous Linux / macOS, terminal 1 : `PARTENAIRE_MODE=flaky .venv/bin/python -m uvicorn partenaire.app:app --port 8001`. Les variables reconnues sont listées dans [`.env.example`](i4-webhooks/.env.example).
+
+**Contrat implémenté :**
+
+| Route | Comportement |
+|---|---|
+| `GET /health` | `200 {"status": "ok"}` |
+| `POST /webhooks/planning` | 413 si corps > 64 Ko ; 401 si horodatage à plus de 300 s ou signature invalide ; 400 si corps authentifié invalide ; 202 `duplicate:false` si nouveau ; 200 `duplicate:true` si déjà reçu (sans nouvelle livraison) |
+| `GET /deliveries/{event_id}` | `{event_id, status: pending\|delivered\|quarantine, attempts}` ou 404 |
+| Partenaire `POST /tickets` | en-tête `Idempotency-Key` ; modes `ok`, `flaky`, `down`, `slow`, `reject` |
+
+**Structure du module :**
+
+```
+i4-webhooks/
+├── recepteur/
+│   ├── main.py          ← application FastAPI (routes, ordre des contrôles)
+│   ├── signature.py     ← horodatage + HMAC-SHA256 sur le corps brut
+│   ├── validation.py    ← contrat de l'événement et règles métier de la séance
+│   ├── stockage.py      ← suivi des livraisons en mémoire
+│   └── livraison.py     ← envoi au partenaire : timeout, relances, quarantaine
+├── partenaire/app.py    ← partenaire simulé (modes, idempotence)
+├── scripts/envoyer_webhook.py ← envoi d'un webhook signé pour la démonstration
+├── tests/               ← test_recepteur.py, test_livraison.py, outils.py
+├── requirements.txt     ← dépendances aux versions figées
+├── pytest.ini
+└── .env.example         ← variables d'environnement (sans secret réel)
+```
+
+**Preuves :** [`preuves/i4/`](preuves/i4/) contient la trace des 44 tests et les logs réels du récepteur et du partenaire pour les 5 modes.

@@ -1,0 +1,87 @@
+==================================================================
+MODE DU PARTENAIRE : ok
+==================================================================
+--- Sortie du script d'envoi
+POST /webhooks/planning -> 202 {"event_id":"evt-ok","duplicate":false}
+GET /deliveries/evt-ok -> {'event_id': 'evt-ok', 'status': 'delivered', 'attempts': 1}
+--- Renvoi du même événement (doublon)
+POST /webhooks/planning -> 200 {"event_id":"evt-ok","duplicate":true}
+GET /deliveries/evt-ok -> {'event_id': 'evt-ok', 'status': 'delivered', 'attempts': 1}
+--- Mauvais secret
+POST /webhooks/planning -> 401 {"detail":"signature invalide"}
+--- Horodatage de plus de 300 s
+POST /webhooks/planning -> 401 {"detail":"horodatage trop éloigné de l'heure de réception"}
+--- Logs du récepteur
+2026-10-09 00:14:12,581 INFO matrice.webhooks : événement evt-ok accepté, livraison programmée
+2026-10-09 00:14:12,625 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 201 Created"
+2026-10-09 00:14:12,626 INFO matrice.webhooks : livraison evt-ok : réussie (HTTP 201, tentative 1)
+2026-10-09 00:14:13,125 INFO matrice.webhooks : événement evt-ok déjà reçu : doublon ignoré, aucune nouvelle livraison
+2026-10-09 00:14:13,476 WARNING matrice.webhooks : webhook refusé (401) : signature invalide
+2026-10-09 00:14:13,822 WARNING matrice.webhooks : webhook refusé (401) : horodatage trop éloigné de l'heure de réception
+--- Logs du partenaire
+2026-10-09 00:14:12,625 INFO partenaire : ticket evt-ok : requête n°1 (mode ok)
+
+==================================================================
+MODE DU PARTENAIRE : flaky
+==================================================================
+--- Sortie du script d'envoi
+POST /webhooks/planning -> 202 {"event_id":"evt-flaky","duplicate":false}
+GET /deliveries/evt-flaky -> {'event_id': 'evt-flaky', 'status': 'delivered', 'attempts': 2}
+--- Logs du récepteur
+2026-10-09 00:14:18,569 INFO matrice.webhooks : événement evt-flaky accepté, livraison programmée
+2026-10-09 00:14:18,611 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 503 Service Unavailable"
+2026-10-09 00:14:18,612 INFO matrice.webhooks : livraison evt-flaky : HTTP 503 (tentative 1), nouvelle tentative dans 0.2 s
+2026-10-09 00:14:18,822 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 201 Created"
+2026-10-09 00:14:18,823 INFO matrice.webhooks : livraison evt-flaky : réussie (HTTP 201, tentative 2)
+--- Logs du partenaire
+2026-10-09 00:14:18,610 INFO partenaire : ticket evt-flaky : requête n°1 (mode flaky)
+2026-10-09 00:14:18,821 INFO partenaire : ticket evt-flaky : requête n°2 (mode flaky)
+
+==================================================================
+MODE DU PARTENAIRE : down
+==================================================================
+--- Sortie du script d'envoi
+POST /webhooks/planning -> 202 {"event_id":"evt-down","duplicate":false}
+GET /deliveries/evt-down -> {'event_id': 'evt-down', 'status': 'quarantine', 'attempts': 3}
+--- Logs du récepteur
+2026-10-09 00:14:23,516 INFO matrice.webhooks : événement evt-down accepté, livraison programmée
+2026-10-09 00:14:23,558 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 503 Service Unavailable"
+2026-10-09 00:14:23,559 INFO matrice.webhooks : livraison evt-down : HTTP 503 (tentative 1), nouvelle tentative dans 0.2 s
+2026-10-09 00:14:23,762 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 503 Service Unavailable"
+2026-10-09 00:14:23,763 INFO matrice.webhooks : livraison evt-down : HTTP 503 (tentative 2), nouvelle tentative dans 0.4 s
+2026-10-09 00:14:24,168 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 503 Service Unavailable"
+2026-10-09 00:14:24,169 WARNING matrice.webhooks : livraison evt-down : HTTP 503, 3 tentatives épuisées -> quarantine
+--- Logs du partenaire
+2026-10-09 00:14:23,557 INFO partenaire : ticket evt-down : requête n°1 (mode down)
+2026-10-09 00:14:23,762 INFO partenaire : ticket evt-down : requête n°2 (mode down)
+2026-10-09 00:14:24,168 INFO partenaire : ticket evt-down : requête n°3 (mode down)
+
+==================================================================
+MODE DU PARTENAIRE : slow
+==================================================================
+--- Sortie du script d'envoi
+POST /webhooks/planning -> 202 {"event_id":"evt-slow","duplicate":false}
+GET /deliveries/evt-slow -> {'event_id': 'evt-slow', 'status': 'quarantine', 'attempts': 3}
+--- Logs du récepteur
+2026-10-09 00:14:28,873 INFO matrice.webhooks : événement evt-slow accepté, livraison programmée
+2026-10-09 00:14:30,921 INFO matrice.webhooks : livraison evt-slow : timeout (> 2 s) (tentative 1), nouvelle tentative dans 0.2 s
+2026-10-09 00:14:33,136 INFO matrice.webhooks : livraison evt-slow : timeout (> 2 s) (tentative 2), nouvelle tentative dans 0.4 s
+2026-10-09 00:14:35,555 WARNING matrice.webhooks : livraison evt-slow : timeout (> 2 s), 3 tentatives épuisées -> quarantine
+--- Logs du partenaire
+2026-10-09 00:14:28,915 INFO partenaire : ticket evt-slow : requête n°1 (mode slow)
+2026-10-09 00:14:31,126 INFO partenaire : ticket evt-slow : requête n°2 (mode slow)
+2026-10-09 00:14:33,543 INFO partenaire : ticket evt-slow : requête n°3 (mode slow)
+
+==================================================================
+MODE DU PARTENAIRE : reject
+==================================================================
+--- Sortie du script d'envoi
+POST /webhooks/planning -> 202 {"event_id":"evt-reject","duplicate":false}
+GET /deliveries/evt-reject -> {'event_id': 'evt-reject', 'status': 'quarantine', 'attempts': 1}
+--- Logs du récepteur
+2026-10-09 00:14:39,876 INFO matrice.webhooks : événement evt-reject accepté, livraison programmée
+2026-10-09 00:14:39,917 INFO httpx : HTTP Request: POST http://127.0.0.1:8001/tickets "HTTP/1.1 400 Bad Request"
+2026-10-09 00:14:39,918 WARNING matrice.webhooks : livraison evt-reject : HTTP 400, erreur définitive sans relance -> quarantine
+--- Logs du partenaire
+2026-10-09 00:14:39,916 INFO partenaire : ticket evt-reject : requête n°1 (mode reject)
+
