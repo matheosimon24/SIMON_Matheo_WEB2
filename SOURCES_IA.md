@@ -69,7 +69,18 @@ L'IA a été utilisée comme assistant. Le code et les choix techniques ont ét�
 
 ### I4 – Webhooks & API tierce
 
-*À compléter.*
+- **Fichiers concernés :** tout le dossier `i4-webhooks/`, `preuves/i4/`, section I4 du README et de JUSTIFICATIONS.md
+- **Requêtes représentatives :**
+  - Récepteur FastAPI respectant le contrat (taille, horodatage, HMAC sur le corps brut, validation, déduplication, suivi)
+  - Partenaire simulé avec ses 5 modes et livraison avec timeout, relances et quarantaine
+  - Tests couvrant les scénarios demandés, dont un vrai timeout
+- **Ce que l'IA a produit :** le code du récepteur, du partenaire et de la livraison, les tests, le script de démonstration et une première version de la documentation.
+- **Adaptations :** découpage en un fichier par responsabilité ; dépendances injectables (horloge, attente, transport) pour des tests rapides et déterministes ; documentation en français.
+- **Vérifications :**
+  - suite de 44 tests lancée (verte) ;
+  - lenteur des tests repérée (61 s) : sous Windows, une connexion vers un port fermé met environ 2 s à échouer. Les tests du récepteur utilisent désormais un partenaire simulé sans réseau (13 s) ;
+  - démonstration lancée par moi-même avec les deux serveurs et le script : 503 puis succès (2 tentatives), doublon (200 sans nouvelle livraison), signature invalide (401) ;
+  - logs relus : aucune trace du secret ni de la signature.
 
 ## Autres sources
 

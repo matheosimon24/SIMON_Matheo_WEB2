@@ -168,7 +168,61 @@ Le fichier est lu **ligne par ligne** et `traiter_flux()` est un **générateur*
 
 ## I4 – Webhooks & API tierce
 
-- **Choix techniques :** *à compléter*
-- **Alternatives envisagées :** *à compléter*
-- **Preuves :** *à compléter*
-- **Limites :** *à compléter*
+### Choix techniques
+
+- **FastAPI + uvicorn** (pile du projet MATRiCE), **httpx** en client asynchrone pour appeler le partenaire, **pytest** pour les tests. Le partenaire simulé est une deuxième petite application FastAPI.
+- **Un fichier par responsabilité** : `signature.py` (authentification), `validation.py` (contenu), `stockage.py` (suivi), `livraison.py` (fiabilité), `main.py` (enchaînement). Chaque partie se teste et s'explique séparément.
+- **Dépendances injectables** dans `creer_app()` : l'horloge (tester l'ancienneté sans attendre), la fonction d'attente (vérifier les pauses 0,2 / 0,4 s sans les subir) et le transport HTTP (simuler un partenaire sans réseau).
+
+### Sécurité du webhook : l'ordre des contrôles
+
+1. **Taille (413)** en premier, avant toute lecture coûteuse : un corps de plusieurs Mo n'est ni signé ni analysé (protection contre la saturation). L'en-tête `Content-Length` est vérifié, puis la longueur réelle du corps.
+2. **Horodatage (401)** : `X-Timestamp` doit être un entier à 300 s maximum de l'heure de réception, dans le passé comme dans le futur. Un webhook intercepté ne peut donc pas être **rejoué** plus tard. L'horodatage fait partie du message signé : on ne peut pas le modifier sans casser la signature.
+3. **Signature (401)** : `HMAC-SHA256(secret, timestamp + "." + corps brut)`. On signe les **octets reçus**, sans re-sérialiser le JSON (le moindre espace ou ordre de clés différent changerait le résultat). La comparaison utilise `hmac.compare_digest`, en **temps constant**, pour ne pas révéler par le temps de réponse combien de caractères sont corrects.
+4. **Contenu (400)** : le JSON n'est analysé qu'**après** l'authentification ; un attaquant sans secret n'atteint jamais le code de validation. Sont vérifiés : `event_id` non vide, `type = session.updated`, `occurred_at` ISO 8601 **avec fuseau**, et la séance avec les règles métier (AUTO ⇒ `teacherId` null + `proposed` ; `confirmed` ⇒ formateur).
+5. **Déduplication** par `event_id`.
+
+### Idempotence
+
+- **Côté récepteur :** un `event_id` déjà reçu renvoie `200 duplicate:true` et ne déclenche **aucune nouvelle livraison**. Le test d'existence et l'enregistrement se font sans `await` entre les deux : dans la boucle asyncio, deux requêtes identiques simultanées ne peuvent pas s'intercaler, il n'y a donc pas de double enregistrement.
+- **Côté partenaire :** chaque envoi porte `Idempotency-Key = event_id`, identique à toutes les tentatives. C'est ce qui rend les relances **sûres** : si la 1re tentative a été traitée par le partenaire mais que sa réponse s'est perdue (timeout), la 2e ne crée pas de deuxième ticket. Le partenaire simulé renvoie le ticket existant (200) au lieu d'en créer un nouveau (201).
+
+### Timeout et reprise
+
+- **Timeout de 2 s** par tentative (`httpx.AsyncClient(timeout=2.0)`) : un partenaire lent ne bloque jamais indéfiniment une livraison. Mode `slow` (réponse en 3 s) : 3 tentatives coupées à 2 s, environ 6,6 s au total, puis quarantaine.
+- **Relance uniquement sur les erreurs temporaires** : timeout, erreur réseau, 429 (trop de requêtes) et 5xx (panne côté partenaire). **Pas de relance sur les autres 4xx** : c'est la requête elle-même qui est refusée, la renvoyer donnerait la même réponse.
+- **3 tentatives maximum, pauses de 0,2 s puis 0,4 s** (attente qui double) : on laisse au partenaire le temps de se rétablir sans le surcharger.
+- **Quarantaine** après l'échec final ou une erreur définitive : l'événement n'est pas perdu, son état est consultable par `GET /deliveries/{event_id}` pour une reprise manuelle.
+- **Livraison en arrière-plan** (`BackgroundTasks`) : le 202 est renvoyé immédiatement, l'émetteur n'attend pas le partenaire.
+
+### Logs sans secret
+
+Les logs contiennent l'`event_id`, le numéro de tentative, le code HTTP ou la cause (timeout, erreur réseau) et le statut final. Ils ne contiennent **jamais** le secret, la signature reçue ni la signature attendue. Vérifié par le test `test_logs_ne_contiennent_jamais_le_secret_ni_la_signature` et par une recherche dans `preuves/i4/logs-demo.txt` (0 occurrence du secret).
+
+### Stockage en mémoire et limite au redémarrage
+
+Le suivi des livraisons est un dictionnaire en mémoire, accepté par le sujet. **Limite :** tout est perdu au redémarrage du récepteur.
+- un événement déjà reçu serait accepté à nouveau et relivré : l'`Idempotency-Key` évite quand même un ticket en double chez le partenaire ;
+- une livraison en cours ou en quarantaine est perdue ;
+- `GET /deliveries/{event_id}` renvoie 404 pour les événements d'avant le redémarrage.
+En production, il faudrait une base (table des événements avec contrainte d'unicité sur `event_id`, PostgreSQL dans la pile MATRiCE) et une file de tâches pour reprendre les livraisons après un redémarrage.
+
+### Alternatives envisagées
+
+- **Valider le corps avec un modèle Pydantic** dans la signature de la route : FastAPI lirait et analyserait le JSON **avant** la vérification HMAC, et on perdrait le corps brut exact. Lecture manuelle avec `request.body()` choisie pour contrôler l'ordre.
+- **Bibliothèque de relance (tenacity)** : pratique, mais 30 lignes explicites suffisent et rendent les règles du contrat visibles.
+- **Tests avec `httpx.MockTransport` uniquement** : rapides, mais ne testent pas un vrai timeout. Choix mixte : vrai serveur uvicorn pour les modes du partenaire, `MockTransport` pour les cas sans mode dédié (429, autres 4xx).
+- **Délai aléatoire (jitter) dans les pauses** : utile avec beaucoup d'émetteurs, mais le contrat impose 0,2 puis 0,4 s.
+
+### Preuves
+
+- `preuves/i4/tests.txt` : 44 tests verts (signature valide et invalide, ancienneté, taille, contenu invalide, doublon, 503 puis succès, erreur persistante, 400 sans relance, timeout, 429, idempotence, logs sans secret).
+- `preuves/i4/logs-demo.txt` : exécution réelle des deux serveurs pour les 5 modes du partenaire, avec la sortie du script d'envoi et les logs du récepteur et du partenaire.
+
+### Limites
+
+- Stockage en mémoire, perdu au redémarrage (voir plus haut).
+- Une seule instance du récepteur : avec plusieurs instances, la déduplication en mémoire ne fonctionnerait plus (il faudrait un stockage partagé).
+- Le secret par défaut `matrice-local-only` est un secret **de développement** imposé par le sujet ; il peut être remplacé par la variable `MATRICE_WEBHOOK_SECRET`.
+- Pas de reprise automatique des événements en quarantaine.
+- Pas de rotation du secret (accepter deux secrets pendant une transition).
